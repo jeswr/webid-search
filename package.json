@@ -1,0 +1,26 @@
+{
+  "name": "webid-search",
+  "version": "1.0.0",
+  "description": "Daily crawler for WebID search",
+  "main": "dist/crawler.js",
+  "scripts": {
+    "build": "tsc",
+    "crawl": "node dist/crawler.js",
+    "dev": "ts-node src/crawler.ts"
+  },
+  "keywords": [
+    "webid",
+    "crawler",
+    "semantic-web"
+  ],
+  "author": "Jesse Wright",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  }
+}
