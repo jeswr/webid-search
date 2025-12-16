@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
-const fetch = require('node-fetch');
 const $rdf = require('rdflib');
 const fs = require('fs').promises;
 const path = require('path');
+
+// Constants
+const DATA_FILE_PATH = path.join(__dirname, '..', 'data', 'webids.json');
 
 /**
  * Crawls a WebID to discover linked WebIDs
@@ -107,9 +109,8 @@ async function crawlWebID(webid) {
  * @returns {Promise<Set<string>>} Set of existing WebIDs
  */
 async function loadExistingWebIDs() {
-  const dataPath = path.join(__dirname, '..', 'data', 'webids.json');
   try {
-    const content = await fs.readFile(dataPath, 'utf8');
+    const content = await fs.readFile(DATA_FILE_PATH, 'utf8');
     const data = JSON.parse(content);
     return new Set(data.webids || []);
   } catch (error) {
@@ -123,13 +124,12 @@ async function loadExistingWebIDs() {
  * @param {Set<string>} webids - Set of WebIDs to save
  */
 async function saveWebIDs(webids) {
-  const dataPath = path.join(__dirname, '..', 'data', 'webids.json');
   const data = {
     lastUpdated: new Date().toISOString(),
     count: webids.size,
     webids: Array.from(webids).sort()
   };
-  await fs.writeFile(dataPath, JSON.stringify(data, null, 2));
+  await fs.writeFile(DATA_FILE_PATH, JSON.stringify(data, null, 2));
 }
 
 /**
@@ -169,12 +169,6 @@ async function main() {
   // Save the updated collection
   await saveWebIDs(existingWebIDs);
   console.log('\nWebIDs saved to data/webids.json');
-  
-  // Output summary for GitHub Actions
-  if (newCount > 0) {
-    console.log(`\n::set-output name=new_webids::${newCount}`);
-    console.log(`::set-output name=total_webids::${existingWebIDs.size}`);
-  }
 }
 
 main().catch(error => {
